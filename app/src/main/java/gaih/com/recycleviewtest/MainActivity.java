@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i =0;i<3;i++){
             datas.add("hahahhaha");
         }
-        myRecylerViewAdapter = new MyRecylerViewAdapter(datas);
+        myRecylerViewAdapter = new MyRecylerViewAdapter(MainActivity.this,datas);
         recyclerView.setAdapter(myRecylerViewAdapter);
         myRecylerViewAdapter.setOnItemClickListener(new MyRecylerViewAdapter.OnItemClickListener() {
             @Override
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         .start();
                             }
                         }).start();
+                Toast.makeText(MainActivity.this,"第"+position+"个",Toast.LENGTH_SHORT).show();
             }
         });
     }

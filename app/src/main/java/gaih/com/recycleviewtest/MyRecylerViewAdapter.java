@@ -1,5 +1,6 @@
 package gaih.com.recycleviewtest;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ public class MyRecylerViewAdapter extends RecyclerView.Adapter<MyRecylerViewAdap
 
     private List<String> mData;
     private List<Integer> mHeight;
-    public MyRecylerViewAdapter(List<String> Data){
+    private LayoutInflater mInflater;
+    public MyRecylerViewAdapter(Context context, List<String> Data){
+        mInflater = LayoutInflater.from(context);
         mData = Data;
         mHeight = new ArrayList<>();
     }
@@ -33,11 +36,11 @@ public class MyRecylerViewAdapter extends RecyclerView.Adapter<MyRecylerViewAdap
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item,parent,false);
+        View view = mInflater.inflate(R.layout.item,parent,false);
         return new ViewHolder(view);
     }
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         String data = mData.get(position)+position;
         ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
         if (mHeight.size() <= position) {
@@ -46,6 +49,14 @@ public class MyRecylerViewAdapter extends RecyclerView.Adapter<MyRecylerViewAdap
         layoutParams.height = mHeight.get(position);
         holder.cardView.setLayoutParams(layoutParams);
         holder.textView.setText(data);
+        if (itemClickListener!=null){
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onItemClick(holder.itemView,position);
+                }
+            });
+        }
     }
 
     @Override
@@ -53,7 +64,7 @@ public class MyRecylerViewAdapter extends RecyclerView.Adapter<MyRecylerViewAdap
         return mData.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView textView;
         public CardView cardView;
@@ -61,13 +72,6 @@ public class MyRecylerViewAdapter extends RecyclerView.Adapter<MyRecylerViewAdap
             super(itemView);
             textView = (TextView)itemView.findViewById(R.id.text);
             cardView = (CardView)itemView.findViewById(R.id.cardView);
-            textView.setOnClickListener(this);
-        }
-        @Override
-        public void onClick(View v) {
-            if (itemClickListener !=null){
-                itemClickListener.onItemClick(v,getPosition());
-            }
         }
     }
 }
